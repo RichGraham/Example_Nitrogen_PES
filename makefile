@@ -1,51 +1,31 @@
-VPATH = ./
-# Find all source files, create a list of corresponding object files
-SRCS=main.f90
-OBJS=$(patsubst %.f90,%.o,$(SRCS))
-
-# Ditto for mods (They will be in both lists)
-MODS=$(wildcard mod*.f90)
-MOD_OBJS=$(patsubst %.f90,%.o,$(MODS))
-
-# Compiler/Linker settings
-FC = gfortran
-export LIBRARY_PATH += :$(HOME)/.rsg_libs
+#======================================== User/local variables========================================
+F03 = gfortran
 INCLUDE_PATH := $(HOME)/.rsg_libs/include
-FCFLAGS =  -I $(INCLUDE_PATH) -O2 -c -cpp -DDEBUG -Wall -DDEBUG -DASSERTS -Wextra -Wconversion  -ffpe-trap=invalid -ffpe-trap=zero,overflow,underflow -fbacktrace -fdump-core -fcheck=bounds -Wno-tabs  -Wall #-fmax-errors=5
-FLFLAGS =  -l2N2_PES_Feb23
-PROGRAM = a.out
-PRG_OBJ = $(PROGRAM).o
 
-default:
-	$(MAKE) programme
+#======================================== Setup commandline flags ========================================
 
-programme :$(PROGRAM)
+MY_LIBRARIES = 3N2_direct_PES : asymptote : init_eval : gp-oo : 2N2_PES_Feb23
+ALL_LIBRARIES = $(STANDARD_LIBRARIES): $(MY_LIBRARIES)
 
-all:
-	$(MAKE)
+FCFLAGS = -O3 -I$(INCLUDE_PATH)
+FLFLAGS = ${subst :, -l,$(ALL_LIBRARIES)} -L $(HOME)/.rsg_libs/
 
-# Compiler steps for all objects
-$(OBJS) : %.o : %.f90
-	$(FC) $(FCFLAGS) -o $@ $<
 
-# Linker
-$(PROGRAM) : $(OBJS)
-	$(FC) -o $@ $^ $(FLFLAGS)
+#======================================== Compilation  ========================================
 
-# If something doesn't work right, have a 'make debug' to
-# show what each variable contains.
-debug:
-	@echo "SRCS = $(SRCS)"
-	@echo "OBJS = $(OBJS)"
-	@echo "MODS = $(MODS)"
-	@echo "MOD_OBJS = $(MOD_OBJS)"
-	@echo "PROGRAM = $(PROGRAM)"
-	@echo "PRG_OBJ = $(PRG_OBJ)"
+SOURCES= main.f90
+OBJECTS = $(addsuffix .o,$(basename $(SOURCES)))
+PRODUCT= a.out
+VPATH=./
+
+
+$(PRODUCT): $(OBJECTS)
+	$(F03) $(FLFLAGS) -o  $@ $^
+
+%.o: %.f03
+	$(F03) -c $(FCFLAGS) -o $@ $<
+
 
 clean:
-	rm -rf $(OBJS) $(PROGRAM) $(patsubst %.o,%.mod,$(MOD_OBJS)) *.mod
-	$(RM) $(PROGRAM)
-	$(MAKE) -C src clean
-	$(MAKE) -C tests clean
-
-.PHONY: debug default clean
+	rm -f *.o
+	rm $(PRODUCT)

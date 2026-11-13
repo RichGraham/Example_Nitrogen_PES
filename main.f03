@@ -1,10 +1,24 @@
 program PES_GP_Symm
+  ! Binary potential
   use PES_2N2_Feb23, only : PES_2N2, load_gp_2n2_data
-  use helpers, only: fixedAngleSlice, computeDistances
-  implicit none
+
+  ! Non-additive (trimer) potential
+  use class_GP_PES, only : GP_PES
+  use GP_factory_3N2, only : make_3N2_main_mq_GP_4000_Aug26
+
+
+  implicit none(type, external)
+
+  ! Binary potential
   double precision rab_binary(4)
   double precision expected_value, actual_value
 
+  ! Non-additive (trimer) potential
+  class(GP_PES), allocatable :: my_GP
+  double precision  x_in_1(12)
+  x_in_1(1:12) = (/0.3598028100d0, 0.3239774500d0, 0.3452071400d0, 0.3456886200d0, 0.2793676700d0, &
+      0.2214151600d0, 0.3255218100d0, 0.2468203700d0, 0.1996344600d0, 0.1786807700d0, &
+      0.2259325900d0, 0.2047254400d0 /)
 
   print *, "======== N2 Binary potential ========"
   call load_GP_2N2_Data
@@ -33,7 +47,9 @@ program PES_GP_Symm
   print *,'difference = ', abs(expected_value - actual_value)
   print *,''
 
-
+  print *, "======== 3N2 Trimer potential ========"
+  my_GP = make_3N2_main_mq_GP_4000_Aug26()
+  print *,my_GP%evaluate( x_in_1), 0.d0
 
 end program PES_GP_Symm
 
