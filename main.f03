@@ -82,5 +82,61 @@ program PES_GP_Symm
   print *,'difference = ', abs(expected_value - actual_value)
   print *,''
 
+  print *, "___Repulsive region (all three PES are zero)___"
+  atomic_positions(:,1) = (/0.d0, 0.d0, -N2_bond_length/)
+  atomic_positions(:,2) = (/0.d0, 0.d0, N2_bond_length/)
+  atomic_positions(:,3) = (/1.d0, 0.d0, -N2_bond_length/)
+  atomic_positions(:,4) = (/1.d0, 0.d0, N2_bond_length/)
+  atomic_positions(:,5) = (/0.d0, 4.d0, -N2_bond_length/)
+  atomic_positions(:,6) = (/0.d0, 4.d0, N2_bond_length/)
+
+  print *,'PES_1'
+  expected_value = 0.d0
+  actual_value = my_PES_1%evaluate( atomic_positions)
+  print *,'PES value: expected = ',expected_value,', actual = ',actual_value
+  print *,'difference = ', abs(expected_value - actual_value)
+  print *,''
+
+  print *,'PES_2'
+  actual_value = my_PES_2%evaluate( atomic_positions)
+  print *,'PES value: expected = ',expected_value,', actual = ',actual_value
+  print *,'difference = ', abs(expected_value - actual_value)
+  print *,''
+
+  print *,'PES_ZeroAsymptote'
+  actual_value = my_PES_0%evaluate( atomic_positions)
+  print *,'PES value: expected = ',expected_value,', actual = ',actual_value
+  print *,'difference = ', abs(expected_value - actual_value)
+  print *,''
+
+  print *, "___Asymptotic region ___"
+  atomic_positions(:,1) = (/0.d0, 0.d0, -N2_bond_length/)
+  atomic_positions(:,2) = (/0.d0, 0.d0, N2_bond_length/)
+  atomic_positions(:,3) = (/3.d0, 0.d0, -N2_bond_length/)
+  atomic_positions(:,4) = (/3.d0, 0.d0, N2_bond_length/)
+  atomic_positions(:,5) = (/0.d0, 10.d0, -N2_bond_length/)
+  atomic_positions(:,6) = (/0.d0, 10.d0, N2_bond_length/)
+
+  print *,'PES_1'
+  expected_value = 1.8723345807907085d-008
+  actual_value = my_PES_1%evaluate( atomic_positions)
+  print *,'PES value: expected = ',expected_value,', actual = ',actual_value
+  print *,'difference = ', abs(expected_value - actual_value)
+  print *,''
+
+  print *,'PES_2'
+  expected_value = 1.3349856836810425d-008
+  actual_value = my_PES_2%evaluate( atomic_positions)
+  print *,'PES value: expected = ',expected_value,', actual = ',actual_value
+  print *,'difference = ', abs(expected_value - actual_value)
+  print *,''
+
+  print *,'PES_ZeroAsymptote'
+  expected_value = 0.d0
+  actual_value = my_PES_0%evaluate( atomic_positions)
+  print *,'PES value: expected = ',expected_value,', actual = ',actual_value
+  print *,'difference = ', abs(expected_value - actual_value)
+  print *,''
+
 end program PES_GP_Symm
 
