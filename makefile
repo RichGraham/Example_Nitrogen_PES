@@ -13,7 +13,7 @@ FLFLAGS = ${subst :, -l,$(ALL_LIBRARIES)} -L $(HOME)/.rsg_libs/
 
 #======================================== Compilation  ========================================
 
-SOURCES= main.f90
+SOURCES= Example_3N2_PES.f03  main.03
 OBJECTS = $(addsuffix .o,$(basename $(SOURCES)))
 PRODUCT= a.out
 VPATH=./
